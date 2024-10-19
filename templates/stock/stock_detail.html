@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>{{ stock.name }}</h2>
+<p>Quantity: {{ stock.quantity }}</p>
+<p>Price: ${{ stock.price }}</p>
+<a href="{% url 'stock_update' stock.pk %}">Edit</a>
+<a href="{% url 'stock_delete' stock.pk %}">Delete</a>
+<a href="{% url 'stock_list' %}">Back to list</a>
+{% endblock %}

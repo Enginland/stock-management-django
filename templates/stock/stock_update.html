@@ -1,0 +1,14 @@
+<!-- templates/stock/stock_update.html -->
+{% extends 'base.html' %}
+
+{% block title %}Edit Stock{% endblock %}
+
+{% block content %}
+<h1>Edit Stock</h1>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Update Stock</button>
+</form>
+<a href="{% url 'stock_list' %}">Back to Stock List</a>
+{% endblock %}

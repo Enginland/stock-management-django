@@ -1,0 +1,14 @@
+<!-- templates/stock/stock_create.html -->
+{% extends 'base.html' %}
+
+{% block title %}Add Stock{% endblock %}
+
+{% block content %}
+<h1>Add New Stock</h1>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Stock</button>
+</form>
+<a href="{% url 'stock_list' %}">Back to Stock List</a>
+{% endblock %}
