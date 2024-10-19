@@ -13,7 +13,7 @@ def stock_list(request):
     if search_term:
         stocks = stocks.filter(name__icontains=search_term)
 
-    paginator = Paginator(stocks, 10)  # Show 10 stocks per page
+    paginator = Paginator(stocks, 20)  # Show 10 stocks per page
     page_number = request.GET.get('page')
 
     try:
@@ -42,7 +42,7 @@ def stock_create(request):
             return redirect('stock_list')  # Redirect to stock list after creation
     else:
         form = StockForm()
-    return render(request, 'stock/stock_create.html', {'form': form})
+    # return render(request, 'stock/stock_create.html', {'form': form})
 
 # Update an existing stock
 def stock_update(request, pk):
@@ -54,7 +54,7 @@ def stock_update(request, pk):
             return redirect('stock_detail', pk=stock.pk)
     else:
         form = StockForm(instance=stock)
-    return render(request, 'stock/stock_update.html', {'form': form})
+    # return render(request, 'stock/stock_update.html', {'form': form})
 
 # Delete an existing stock
 def stock_delete(request, pk):
@@ -62,4 +62,4 @@ def stock_delete(request, pk):
     if request.method == 'POST':
         stock.delete()
         return redirect('stock_list')
-    return render(request, 'stock/stock_delete.html', {'stock': stock})
+    # return render(request, 'stock/stock_delete.html', {'stock': stock})
