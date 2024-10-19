@@ -2,11 +2,31 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from .models import Stock
 from .forms import StockForm  # You will create this form next
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-# List all stocks
+# List all stocks with pagination and search
 def stock_list(request):
+    search_term = request.GET.get('search', '')  # Get the search term from the query parameters
     stocks = Stock.objects.all()
-    return render(request, 'stock/stock_list.html', {'stocks': stocks})
+
+    # Filter stocks based on the search term
+    if search_term:
+        stocks = stocks.filter(name__icontains=search_term)
+
+    paginator = Paginator(stocks, 10)  # Show 10 stocks per page
+    page_number = request.GET.get('page')
+
+    try:
+        stocks_page = paginator.get_page(page_number)
+    except PageNotAnInteger:
+        stocks_page = paginator.page(1)  # If page is not an integer, deliver first page.
+    except EmptyPage:
+        stocks_page = paginator.page(paginator.num_pages)  # If page is out of range, deliver last page of results.
+
+    return render(request, 'stock/stock_list.html', {
+        'stocks': stocks_page,
+        'search_term': search_term,  # Pass the search term to the template
+    })
 
 # View stock detail
 def stock_detail(request, pk):

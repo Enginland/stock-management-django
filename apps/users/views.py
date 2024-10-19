@@ -3,6 +3,8 @@ from django.contrib.auth import login, authenticate
 from .forms import CustomUserCreationForm  # Your custom form
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse  # To use the URL name for redirecting
+from django.contrib import messages
+from django.contrib.auth import logout
 
 def open(request):
     return render(request, 'open.html')  # Ensure you have a open.html template
@@ -17,7 +19,10 @@ def register(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
+                messages.success(request, f"Account created for {username}!")
                 return redirect(reverse('main:index'))  # Redirect to the main page after registration
+        else:
+            messages.error(request, 'There was an error with your registration.')
     else:
         form = CustomUserCreationForm()
     return render(request, 'users/register.html', {'form': form})
@@ -35,5 +40,14 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            messages.success(request, f"Welcome back, {username}!")
             return redirect(reverse('main:index'))  # Redirect to the main page after login
+        else:
+            messages.error(request, 'Invalid username or password.')
     return render(request, 'users/login.html')
+
+@login_required
+def logout_view(request):
+    logout(request)
+    messages.success(request, "You have been logged out.")
+    return redirect('login')

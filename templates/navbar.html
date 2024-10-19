@@ -27,7 +27,7 @@
         <div class="sidebar-content">
           <ul class="nav nav-secondary">
             <li class="nav-item active">
-              <a data-bs-toggle="collapse" href="{% url 'home' %}" class="collapsed" aria-expanded="false" >
+              <a href="{% url 'home' %}" class="collapsed" aria-expanded="false" >
                 <i class="fas fa-home"></i> <p>Dashboard</p></a>
             </li>
             <li class="nav-section">
@@ -43,7 +43,7 @@
               <a href="#base"> <i class="fas fa-clipboard-list"></i><p>Invetory</p> </a> 
             </li>
             <li class="nav-item">
-              <a href="#base"> <i class="fas fa-warehouse"></i> <p>Stock</p> </a> 
+              <a href="{% url 'stock_list' %}"> <i class="fas fa-warehouse"></i> <p>Stock</p> </a> 
             </li>
             <li class="nav-item">
               <a href="#base"> <i class="fas fa-truck"></i> <p>Supplier</p> </a> 

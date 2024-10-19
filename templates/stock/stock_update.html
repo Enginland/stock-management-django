@@ -1,14 +1,77 @@
-<!-- templates/stock/stock_update.html -->
 {% extends 'base.html' %}
 
 {% block title %}Edit Stock{% endblock %}
 
 {% block content %}
-<h1>Edit Stock</h1>
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Update Stock</button>
-</form>
-<a href="{% url 'stock_list' %}">Back to Stock List</a>
+<div class="container mt-5">
+    <h1>Edit Stock</h1>
+    <form method="POST" id="editStockForm">
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control", required=True) }}
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form.quantity.label(class="form-label") }}
+                {{ form.quantity(class="form-control", required=True) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form.price.label(class="form-label") }}
+                {{ form.price(class="form-control", required=True) }}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" id="updateStockButton">Update Stock</button>
+    </form>
+    <a href="{% url 'stock_list' %}" class="btn btn-secondary mt-3">Back to Stock List</a>
+</div>
+
+<!-- Confirm Update Modal -->
+<div class="modal fade" id="confirmUpdateModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title">Stock Updated</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Name:</strong> <span id="updatedName"></span></p>
+                <p><strong>Quantity:</strong> <span id="updatedQuantity"></span></p>
+                <p><strong>Price:</strong> <span id="updatedPrice"></span></p>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const editStockForm = document.getElementById('editStockForm');
+        
+        editStockForm.onsubmit = async function (e) {
+            e.preventDefault();
+            const formData = new FormData(editStockForm);
+            const response = await fetch(editStockForm.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            });
+            const data = await response.json();
+            
+            // Update the modal fields
+            document.getElementById('updatedName').innerText = data.name;
+            document.getElementById('updatedQuantity').innerText = data.quantity;
+            document.getElementById('updatedPrice').innerText = data.price;
+
+            // Show the confirmation modal
+            $('#confirmUpdateModal').modal('show');
+        };
+    });
+</script>
+{% endblock %}
 {% endblock %}
