@@ -1,5 +1,5 @@
 
-<p align="center"><a href="#" target="_blank"><img src="https://w7.pngwing.com/pngs/119/322/png-transparent-django-logo-django-project-web-framework-web-development.png" width="400" alt="Laravel Logo"></a></p>
+<p align="center"><a href="#" target="_blank"><img src="static/assets/img/djangoLogo.png" width="400" alt="Laravel Logo"></a></p>
 <h1 align="center">Stock Management System</h1>
 <p align="center">
 </p>
