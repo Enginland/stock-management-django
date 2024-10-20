@@ -94,7 +94,18 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+# Email backend settings for development (this prints emails to the console)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+# For production, use an actual email service
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'  # Or your email provider's SMTP server
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'your_email@example.com'
+# EMAIL_HOST_PASSWORD = 'your_password'
+
+DEFAULT_FROM_EMAIL = 'webmaster@localhost'  # Set this to your desired email
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
