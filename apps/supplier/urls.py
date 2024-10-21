@@ -1,7 +1,9 @@
 from django.urls import path
-from . import views  # Make sure you have the correct views imported
+from . import views
 
 urlpatterns = [
-    # path('', views.home, name='home'),  # Replace with your actual view
-    # Add more paths as needed
+    path('suppliers/', views.supplier_list, name='supplier_list'),
+    path('suppliers/new/', views.supplier_create, name='supplier_create'),
+    path('suppliers/edit/<int:id>/', views.supplier_update, name='supplier_update'),
+     path('suppliers/delete/<int:id>/', views.supplier_delete, name='supplier_delete'),  # Delete a supplier
 ]
