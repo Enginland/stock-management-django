@@ -25,7 +25,7 @@ def supplier_create(request, id=None):
     
     return render(request, 'supplier/supplier_list.html', {'form': form})
 
-# Add or Edit Supplier (CREATE / UPDATE)
+
 def supplier_update(request, id=None):
     if id:
         supplier = get_object_or_404(Supplier, id=id)  # If ID is provided, update an existing supplier
