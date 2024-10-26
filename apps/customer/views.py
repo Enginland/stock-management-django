@@ -1,51 +1,32 @@
-from django.shortcuts import render
-
-# Create your views here.
-from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse
-
-from apps import customer
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from .models import Customer
 from .forms import CustomerForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Value
-from django.db.models.functions import Concat
-
-# List all customers
+# List Customers
 def customer_list(request):
-    customers = Customer.objects.all()
-    return render(request, 'customer/customer_list.html', {'suppliers': customers})
-    # search_term = request.GET.get('search', '')  # Get the search term from the query parameters
-    # customers = Customer.objects.all()
+    search_term = request.GET.get('search', '')  # Get the search term from the query parameters
+    customer = Customer.objects.all()
 
-    # # Filter stocks based on the search term
-    # if search_term:
-    #     # Combine first_name and last_name and then filter using the search term
-    #     customers = customers.annotate(
-    #         full_name=Concat('first_name', Value(' '), 'last_name')
-    #     ).filter(full_name__icontains=search_term)
+    # Filter stocks based on the search term
+    if search_term:
+        customer = customer.filter(name__icontains=search_term)
 
-    # paginator = Paginator(customers, 20)  # Show 10 stocks per page
-    # page_number = request.GET.get('page')
+    paginator = Paginator(customer, 20)  # Show 10 stocks per page
+    page_number = request.GET.get('page')
 
-    # try:
-    #     customers_page = paginator.get_page(page_number)
-    # except PageNotAnInteger:
-    #     customers_page = paginator.page(1)  # If page is not an integer, deliver first page.
-    # except EmptyPage:
-    #     customers_page = paginator.page(paginator.num_pages)  # If page is out of range, deliver last page of results.
+    try:
+        customer_page = paginator.get_page(page_number)
+    except PageNotAnInteger:
+        customer_page = paginator.page(1)  # If page is not an integer, deliver first page.
+    except EmptyPage:
+        customer_page = paginator.page(paginator.num_pages)  # If page is out of range, deliver last page of results.
 
-    # return render(request, 'customer/customer_list.html', {
-    #     'stocks': customers_page,
-    #     'search_term': search_term,  # Pass the search term to the template
-        
-    # })
-# Customer details view
-def customer_detail(request, customer_id):
-    customer = get_object_or_404(Customer, id=customer_id)
-    # return render(request, 'customer/customer_detail.html', {'customer': customer})
-
-# Create a new customer
+    return render(request, 'customer/customer_list.html', {
+        'customer': customer_page,
+        'search_term': search_term,  # Pass the search term to the template
+    })
+# Add or Edit Customer
 def customer_create(request, id=None):
     if id:
         customer = get_object_or_404(Customer, id=id)
@@ -56,28 +37,41 @@ def customer_create(request, id=None):
         form = CustomerForm(request.POST, instance=customer)
         if form.is_valid():
             form.save()
+            if id:
+                messages.success(request, 'Customer updated successfully!')
+            else:
+                messages.success(request, 'Customer added successfully!')
             return redirect('customer_list')
     else:
         form = CustomerForm(instance=customer)
     
     return render(request, 'customer/customer_list.html', {'form': form})
 
-# Update an existing customer
-def customer_update(request, customer_id):
-    customer = get_object_or_404(Customer, id=customer_id)
-    if request.method == "POST":
+# Update Customer
+def customer_update(request, id=None):
+    if id:
+        customer = get_object_or_404(Customer, id=id)
+    else:
+        customer = None
+
+    if request.method == 'POST':
         form = CustomerForm(request.POST, instance=customer)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Customer updated successfully!' if id else 'Customer added successfully!')
             return redirect('customer_list')
     else:
         form = CustomerForm(instance=customer)
+
     return render(request, 'customer/customer_list.html', {'form': form})
 
-# Delete an existing Customer
-def customer_delete(request, customer_id):
-    Customer = get_object_or_404(Customer, id=customer_id)
+# Delete Customer
+def customer_delete(request, id):
+    customer = get_object_or_404(Customer, id=id)
+
     if request.method == 'POST':
-        Customer.delete()
+        customer.delete()
+        messages.success(request, 'Customer deleted successfully!')
         return redirect('customer_list')
-    # return render(request, 'stock/stock_delete.html', {'stock': stock})
+
+    return render(request, 'customer/customer_list.html', {'customer': customer})
