@@ -6,17 +6,9 @@
 <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
     <div>
       <h3 class="fw-bold mb-3">Dashboard</h3>
-      <h6 class="op-7 mb-2">customer/customer_list</h6>
+      {% comment %} <h6 class="op-7 mb-2">stock/stock_list</h6> {% endcomment %}
     </div>
   </div>
-  {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li class="{{ message.tags }}">{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
-
 <div class="col-md-12">
     <div class="card">
         <div class="card-header">
@@ -33,12 +25,65 @@
             </div>
             <!-- Search Box -->
             <div class="mt-3">
-                {% comment %} <form method="GET" action="{% url 'customer_list' %}">
-                    <input type="text" id="searchStock" name="search" class="form-control" placeholder="Search Stocks..." value="{{ search_term }}" />
-                </form> {% endcomment %}
+                <form method="GET" action="{% url 'customer_list' %}">
+                    <input type="text" id="searchCustomer" name="search" class="form-control" placeholder="Search Customers..." value="{{ search_term }}" />
+                </form>
             </div>
         </div>
         <div class="card-body">
+            <!-- Add Stock Modal -->
+            <div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title">Add New Customer</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" id="addCustomerForm" action="{% url 'customer_create' %}">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                            <label>fisrt Name</label>
+                                            <input id="addName" type="text" name="first_name" class="form-control" placeholder="Enter First Name" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                            <label>Last Name</label>
+                                            <input id="addName" type="text" name="last_name" class="form-control" placeholder="Enter Last Name" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                            <label>Email</label>
+                                            <input id="addName" type="text" name="email" class="form-control" placeholder="Enter Email" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                            <label>Phone Number</label>
+                                            <input id="addName" type="text" name="phone_number" class="form-control" placeholder="Enter Phone Number" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                            <label>Address</label>
+                                            <input id="addName" type="text" name="address" class="form-control" placeholder="Enter Address" required />
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="submit" id="addRowButton" class="btn btn-primary" form="addCustomerForm">Add</button>
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="table-responsive">
                 <table class="display table table-striped table-hover" id="stockTable">
@@ -54,7 +99,7 @@
                     <tbody>
                         {% for customer in customers %}
                         <tr>
-                            <td>{{ customer.first_name }}</td>
+                            <td>{{ customer.first_name }} {{ customer.last_name }}</td>
                             <td>{{ customer.email }}</td>
                             <td>{{ customer.phone_number }}</td>
                             <td>{{ customer.address }}</td>
@@ -64,8 +109,8 @@
                                         type="button"
                                         class="btn btn-link btn-primary btn-lg"
                                         data-bs-toggle="modal"
-                                        data-bs-target="#ViewCustomers{{ customer.id }}"
-                                        title="View Customer"
+                                        data-bs-target="#ViewCustomerModal{{ customer.id }}"
+                                        title="View Stock"
                                     >
                                         <i class="fa fa-eye"></i>
                                     </button>
@@ -73,8 +118,8 @@
                                         type="button"
                                         class="btn btn-link btn-primary btn-lg"
                                         data-bs-toggle="modal"
-                                        data-bs-target="#UpdateCustomers{{ customer.id }}"
-                                        title="Edit Customer"
+                                        data-bs-target="#UpdateCustomerModal{{ customer.id }}"
+                                        title="Edit Stock"
                                     >
                                         <i class="fa fa-edit"></i>
                                     </button>
@@ -82,63 +127,17 @@
                                         type="button"
                                         class="btn btn-link btn-danger"
                                         data-bs-toggle="modal"
-                                        data-bs-target="#DeleteCustomer{{ customer.id }}"
-                                        title="Delete Customer"
+                                        data-bs-target="#DeleteCustomerModal{{ customer.id }}"
+                                        title="Delete Stock"
                                     >
                                         <i class="fa fa-times"></i>
                                     </button>
                                 </div>
                             </td>
                         </tr>
-                        <!-- Add Customer Modal -->
-                        <div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header border-0">
-                                        <h5 class="modal-title">Add New Customer</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form method="POST" id="CustomerForm" action="{% url 'customer_create' %}">
-                                            {% csrf_token %}
-                                            <div class="row">
-                                                <div class="col-sm-12">
-                                                    <div class="form-group form-group-default">
-                                                        <label>Name</label>
-                                                        <input id="addName" type="text" name="first_name" class="form-control" placeholder="Enter First Name" required />
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-12">
-                                                    <div class="form-group form-group-default">
-                                                        <label>Email</label>
-                                                        <input id="addEmail" type="text" name="email" class="form-control" placeholder="Enter Email" required />
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-12">
-                                                    <div class="form-group form-group-default">
-                                                        <label>Phone Number</label>
-                                                        <input id="addName" type="text" name="phone_number" class="form-control" placeholder="Enter Phone Number" required />
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-12">
-                                                    <div class="form-group form-group-default">
-                                                        <label>Address</label>
-                                                        <input id="addAdress" type="text" name="address" class="form-control" placeholder="Enter Address" required />
-                                                    </div>
-                                                </div>
-                                            
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div class="modal-footer border-0">
-                                        <button type="submit" id="addRowButton" class="btn btn-primary" form="CustomerForm">Add</button>
-                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                         <!-- View Stock Modal -->
-                        <div class="modal fade" id="ViewCustomers{{ customer.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal fade" id="ViewCustomerModal{{ customer.id }}" tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header border-0">
@@ -146,7 +145,7 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <p><strong>First Name:</strong> {{ customer.first_name }}</p>
+                                        <p><strong>Name:</strong> {{ customer.first_name }}{{ customer.last_name }}</p>
                                         <p><strong>Email:</strong> {{ customer.email }}</p>
                                         <p><strong>Phone Number:</strong> {{ customer.phone_number }}</p>
                                         <p><strong>Address:</strong> {{ customer.address }}</p>
@@ -159,7 +158,7 @@
                         </div>
 
                         <!-- Edit Stock Modal -->
-                        <div class="modal fade" id="UpdateCustomers{{ customer.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal fade" id="UpdateCustomerModal{{ customer.id }}" tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header border-0">
@@ -173,33 +172,39 @@
                                             <div class="row">
                                                 <div class="col-sm-12">
                                                     <div class="form-group form-group-default">
-                                                        <label>First Name</label>
-                                                        <input id="editName{{ customer.id }}" type="text" name="name" class="form-control" value="{{ customer.first_name }}" required />
+                                                        <label>Fisrt Name</label>
+                                                        <input id="editName{{ customer.id }}" type="text" name="fisrt_name" class="form-control" value="{{ customer.first_name }}" required />
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <div class="form-group form-group-default">
+                                                        <label>Last Name</label>
+                                                        <input id="editName{{ customer.id }}" type="text" name="last_name" class="form-control" value="{{ customer.last_name }}" required />
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group form-group-default">
                                                         <label>Email</label>
-                                                        <input id="editEmail{{ customer.id }}" type="text" name="email" value="{{ customer.email }}" class="form-control" required />
+                                                        <input id="editName{{ customer.id }}" type="text" name="email" class="form-control" value="{{ customer.email }}" required />
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group form-group-default">
                                                         <label>Phone Number</label>
-                                                        <input id="editPhone{{ customer.id }}" type="text" name="phone_number" value="{{ customer.phone_number }}" class="form-control" required />
+                                                        <input id="editName{{ customer.id }}" type="text" name="phone_number" class="form-control" value="{{ customer.phone_number }}" required />
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group form-group-default">
                                                         <label>Address</label>
-                                                        <input id="editAddress{{ customer.id }}" type="text" name="address" value="{{ customer.address }}" class="form-control" required />
+                                                        <input id="editName{{ customer.id }}" type="text" name="address" class="form-control" value="{{ customer.address }}" required />
                                                     </div>
                                                 </div>
                                             </div>
                                         </form>
                                     </div>
                                     <div class="modal-footer border-0">
-                                        <button type="submit" class="btn btn-primary" form="UppdateCustomerForm{{ customer.id }}">Save changes</button>
+                                        <button type="submit" class="btn btn-primary" form="UpdateCustomerForm{{ customer.id }}">Save changes</button>
                                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                                     </div>
                                 </div>
@@ -207,7 +212,7 @@
                         </div>
 
                         <!-- Delete Stock Modal -->
-                        <div class="modal fade" id="DeleteCustomer{{ customer.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal fade" id="DeleteCustomerModal{{ customer.id }}" tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header border-0">
@@ -215,7 +220,7 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <p>Are you sure you want to delete <strong>{{ customer.first_name }}</strong>?</p>
+                                        <p>Are you sure you want to delete <strong>{{ customer.name }}</strong>?</p>
                                     </div>
                                     <div class="modal-footer border-0">
                                         <!-- Form to Delete Stock -->
@@ -237,12 +242,12 @@
             <div class="mt-3">
                 <nav aria-label="Page navigation">
                     <ul class="pagination justify-content-center">
-                        {% if stocks.has_previous %}
+                        {% if customers.has_previous %}
                             <li class="page-item">
                                 <a class="page-link" href="?page=1" aria-label="First">First</a>
                             </li>
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ stocks.previous_page_number }}" aria-label="Previous">Previous</a>
+                                <a class="page-link" href="?page={{ customers.previous_page_number }}" aria-label="Previous">Previous</a>
                             </li>
                         {% else %}
                             <li class="page-item disabled">
@@ -253,8 +258,8 @@
                             </li>
                         {% endif %}
 
-                        {% for num in stocks.paginator.page_range %}
-                            {% if stocks.number == num %}
+                        {% for num in customers.paginator.page_range %}
+                            {% if customers.number == num %}
                                 <li class="page-item active">
                                     <span class="page-link">{{ num }}</span>
                                 </li>
@@ -265,12 +270,12 @@
                             {% endif %}
                         {% endfor %}
 
-                        {% if stocks.has_next %}
+                        {% if customers.has_next %}
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ stocks.next_page_number }}" aria-label="Next">Next</a>
+                                <a class="page-link" href="?page={{ customers.next_page_number }}" aria-label="Next">Next</a>
                             </li>
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ stocks.paginator.num_pages }}" aria-label="Last">Last</a>
+                                <a class="page-link" href="?page={{ customers.paginator.num_pages }}" aria-label="Last">Last</a>
                             </li>
                         {% else %}
                             <li class="page-item disabled">
@@ -308,7 +313,7 @@
 {% block scripts %}
 <script>
     // Add search functionality
-    document.getElementById('searchStock').addEventListener('keyup', function() {
+    document.getElementById('searchCustomer').addEventListener('keyup', function() {
         var input = this.value.toLowerCase();
         var rows = document.querySelectorAll('#stockTable tbody tr');
         
@@ -320,9 +325,5 @@
             row.style.display = found ? '' : 'none';
         });
     });
-    $('#create').on('hidden.bs.modal', function () {
-        $('#CustomerForm')[0].reset();
-    });
-    
 </script>
 {% endblock %}
