@@ -13,7 +13,7 @@ def customer_list(request):
     if search_term:
         customers = customers.filter(name__icontains=search_term)
 
-    paginator = Paginator(customers, 20)  # Show 10 stocks per page
+    paginator = Paginator(customers, 20)  # Show 20 stocks per page
     page_number = request.GET.get('page')
 
     try:
@@ -51,10 +51,10 @@ def customer_update(request, pk):
         form = CustomerForm(request.POST, instance=customer)
         if form.is_valid():
             form.save()
-            return redirect('customer_list', pk=customer.pk)
+            return redirect('customer_detail', pk=customer.pk)
     else:
         form = CustomerForm(instance=customer)
-    # return render(request, 'customer_list', {'form': form})
+    # return render(request, 'customer/customer_detail.html', {'form': form})
 
 # Delete an existing stock
 def customer_delete(request, pk):
