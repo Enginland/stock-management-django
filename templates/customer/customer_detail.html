@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card card-round" style="width: 50rem; padding: 3rem;">
+        <div class="card-body text-center">
+            <div class="card-title display-5 fw-bold">{{ customer.first_name }} {{ customer.last_name }}</div>
+            <div class="info-user mt-3">
+                <p class="lead">Email: {{ customer.email }}</p>
+                <p class="lead">Phone Number: {{ customer.phone_number }}</p>
+                <p class="lead">Address: {{ customer.address }}</p>
+            </div>
+            <div class="button-group mt-4">
+                <a href="{% url 'customer_list' %}" class="btn btn-primary btn-lg">
+                    <i class="fa fa-arrow-left"></i> Back to list
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
