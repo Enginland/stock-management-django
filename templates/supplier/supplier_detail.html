@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card card-round" style="width: 50rem; padding: 3rem;">
+        <div class="card-body text-center">
+            <div class="card-title display-5 fw-bold">{{ supplier.name }}</div>
+            <div class="info-user mt-3">
+                <p class="lead">Contact Name: {{ supplier.contact_name }}</p>
+                <p class="lead">Phone Number: {{ supplier.phone_number }}</p>
+                <p class="lead">Email: {{ supplier.email }}</p>
+                <p class="lead">Address: {{ supplier.address }}</p>
+                <p class="lead">Website: {{ supplier.website }}</p>
+                <p class="lead">Supplier Code: {{ supplier.supplier_code }}</p>
+                <p class="lead">Tax ID: {{ supplier.tax_id }}</p>
+                <p class="lead">Payment Terms: {{ supplier.payment_terms }}</p>
+                <p class="lead">Notes: {{ supplier.notes }}</p>
+            </div>
+            <div class="button-group mt-4">
+                <a href="{% url 'supplier_list' %}" class="btn btn-primary btn-lg">
+                    <i class="fa fa-arrow-left"></i> Back to list
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
