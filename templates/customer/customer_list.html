@@ -86,7 +86,7 @@
             </div>
 
             <div class="table-responsive">
-                <table class="display table table-striped table-hover" id="stockTable">
+                <table class="display table table-striped table-hover" id="customerTable">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -173,7 +173,7 @@
                                                 <div class="col-sm-12">
                                                     <div class="form-group form-group-default">
                                                         <label>Fisrt Name</label>
-                                                        <input id="editName{{ customer.id }}" type="text" name="fisrt_name" class="form-control" value="{{ customer.first_name }}" required />
+                                                        <input id="editName{{ customer.id }}" type="text" name="first_name" class="form-control" value="{{ customer.first_name }}" required />
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
@@ -220,7 +220,7 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <p>Are you sure you want to delete <strong>{{ customer.name }}</strong>?</p>
+                                        <p>Are you sure you want to delete <strong>{{ customer.first_name }} {{ customer.first_name }}</strong>?</p>
                                     </div>
                                     <div class="modal-footer border-0">
                                         <!-- Form to Delete Stock -->
@@ -315,7 +315,7 @@
     // Add search functionality
     document.getElementById('searchCustomer').addEventListener('keyup', function() {
         var input = this.value.toLowerCase();
-        var rows = document.querySelectorAll('#stockTable tbody tr');
+        var rows = document.querySelectorAll('#customerTable tbody tr');
         
         rows.forEach(function(row) {
             var cells = row.querySelectorAll('td');
