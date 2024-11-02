@@ -1,7 +1,8 @@
 from django.urls import path
-from . import views  # Make sure you have the correct views imported
+from .views import inventory_list, item_detail, update_stock
 
 urlpatterns = [
-    # path('', views.home, name='home'),  # Replace with your actual view
-    # Add more paths as needed
+    path('', inventory_list, name='inventory_list'),
+    path('inventory/<int:pk>/', item_detail, name='item_detail'),
+    path('update/<int:stock_id>/', update_stock, name='update_stock'),
 ]
