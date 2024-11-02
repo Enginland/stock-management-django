@@ -1,0 +1,20 @@
+<h1>Inventory List</h1>
+<ul>
+    {% for item in items %}
+        <li>
+            <a href="{% url 'inventory:product_detail' item.id %}">{{ item.name }}</a>
+            - Stock: {{ item.quantity }} - Price: {{ item.price|floatformat:2 }}  <!-- Display the price with a currency format -->
+            <form action="{% url 'inventory:update_stock' item.id %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <input type="number" name="quantity" min="1" placeholder="Quantity" required>
+                <select name="transaction_type" required>
+                    <option value="IN">Stock In</option>
+                    <option value="OUT">Stock Out</option>
+                </select>
+                <button type="submit">Update Stock</button>
+            </form>
+        </li>
+    {% empty %}
+        <li>No items in inventory.</li>
+    {% endfor %}
+</ul>
