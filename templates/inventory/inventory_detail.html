@@ -1,0 +1,5 @@
+<h1>{{ item.name }}</h1>
+<p>{{ item.description }}</p>
+<p>Price: {{ item.price }}</p>
+<p>Stock: {{ item.quantity_in_stock }}</p>
+<a href="{% url 'update_stock' item.pk %}">Update Stock</a>
