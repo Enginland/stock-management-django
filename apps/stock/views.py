@@ -3,7 +3,9 @@ from django.urls import reverse
 from .models import Stock
 from .forms import StockForm  # You will create this form next
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+from django.http import HttpResponse
+from django.template.loader import get_template
+from weasyprint import HTML
 # List all stocks with pagination and search
 def stock_list(request):
     search_term = request.GET.get('search', '')  # Get the search term from the query parameters
@@ -63,3 +65,12 @@ def stock_delete(request, pk):
         stock.delete()
         return redirect('stock_list')
     # return render(request, 'stock/stock_delete.html', {'stock': stock})
+def generate_pdf_report(request):
+    products = Stock.objects.all()
+    template = get_template('stock/stock_report_pdf.html')
+    html_content = template.render({'products': products})
+    pdf_file = HTML(string=html_content).write_pdf()
+
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="stock_report.pdf"'
+    return response
