@@ -6,17 +6,9 @@
 <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
     <div>
       <h3 class="fw-bold mb-3">Dashboard</h3>
-      <h6 class="op-7 mb-2">Supplier/Supplier_list</h6>
+      {% comment %} <h6 class="op-7 mb-2">stock/stock_list</h6> {% endcomment %}
     </div>
   </div>
-  {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li class="{{ message.tags }}">{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
-
 <div class="col-md-12">
     <div class="card">
         <div class="card-header">
@@ -28,20 +20,103 @@
                     data-bs-target="#addRowModal"
                 >
                     <i class="fa fa-plus"></i>
-                    Add New Stock
+                    Add New Supplier
                 </button>
             </div>
             <!-- Search Box -->
             <div class="mt-3">
-                {% comment %} <form method="GET" action="{% url 'stock_list' %}">
-                    <input type="text" id="searchStock" name="search" class="form-control" placeholder="Search Stocks..." value="{{ search_term }}" />
-                </form> {% endcomment %}
+                <form method="GET" action="{% url 'supplier_list' %}">
+                    <input type="text" id="searchSupplier" name="search" class="form-control" placeholder="Search Suppliers..." value="{{ search_term }}" />
+                </form>
             </div>
         </div>
         <div class="card-body">
+            <!-- Add Stock Modal -->
+            <div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title">Add New Supplier</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" id="addSupplierForm" action="{% url 'supplier_create' %}">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                            <label>Name</label>
+                                            <input id="addName" type="text" name="name" class="form-control" placeholder="Enter name" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                            <label>Contact Name</label>
+                                            <input id="addName" type="text" name="contact_name" class="form-control" placeholder="Enter name" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                            <label>Phone Number</label>
+                                            <input id="addName" type="text" name="phone_number" class="form-control" placeholder="Enter name" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                            <label>Email</label>
+                                            <input id="addEmail" type="text" name="email" class="form-control" placeholder="Enter name" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                            <label>Address</label>
+                                            <input id="addAdress" type="text" name="address" class="form-control" placeholder="Enter name" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                            <label>Website</label>
+                                            <input id="addWebsite" type="text" name="website" class="form-control" placeholder="Enter name"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                            <label>Supplier Code</label>
+                                            <input id="addCode" type="text" name="supplier_code" class="form-control" placeholder="Enter name" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                            <label>Tax ID</label>
+                                            <input id="addTax" type="text" name="tax_id" class="form-control" placeholder="Enter name" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                            <label>Payment Term</label>
+                                            <input id="addPayment" type="text" name="payment_terms" class="form-control" placeholder="Enter name" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                            <label>Note</label>
+                                            <input id="addNote" type="text" name="notes" class="form-control" placeholder="Enter name" required />
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="submit" id="addRowButton" class="btn btn-primary" form="addSupplierForm">Add</button>
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="table-responsive">
-                <table class="display table table-striped table-hover" id="stockTable">
+                <table class="display table table-striped table-hover" id="customerTable">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -64,8 +139,8 @@
                                         type="button"
                                         class="btn btn-link btn-primary btn-lg"
                                         data-bs-toggle="modal"
-                                        data-bs-target="#viewsupplierModal{{ supplier.id }}"
-                                        title="View supplier"
+                                        data-bs-target="#ViewCustomerModal{{ supplier.id }}"
+                                        title="View Stock"
                                     >
                                         <i class="fa fa-eye"></i>
                                     </button>
@@ -73,8 +148,8 @@
                                         type="button"
                                         class="btn btn-link btn-primary btn-lg"
                                         data-bs-toggle="modal"
-                                        data-bs-target="#editsupplierModal{{ supplier.id }}"
-                                        title="Edit supplier"
+                                        data-bs-target="#UpdateCustomerModal{{ supplier.id }}"
+                                        title="Edit Stock"
                                     >
                                         <i class="fa fa-edit"></i>
                                     </button>
@@ -82,109 +157,34 @@
                                         type="button"
                                         class="btn btn-link btn-danger"
                                         data-bs-toggle="modal"
-                                        data-bs-target="#deletesupplierModal{{ supplier.id }}"
-                                        title="Delete supplier"
+                                        data-bs-target="#DeleteCustomerModal{{ supplier.id }}"
+                                        title="Delete Stock"
                                     >
                                         <i class="fa fa-times"></i>
                                     </button>
                                 </div>
                             </td>
                         </tr>
-                        <!-- Add Stock Modal -->
-                        <div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header border-0">
-                                        <h5 class="modal-title">Add New Stock</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form method="POST" id="addsupplierForm" action="{% url 'supplier_create' %}">
-                                            {% csrf_token %}
-                                            <div class="row">
-                                                <div class="col-sm-12">
-                                                    <div class="form-group form-group-default">
-                                                        <label>Name</label>
-                                                        <input id="addName" type="text" name="name" class="form-control" placeholder="Enter name" required />
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-12">
-                                                    <div class="form-group form-group-default">
-                                                        <label>Contact Name</label>
-                                                        <input id="addName" type="text" name="contact_name" class="form-control" placeholder="Enter name" required />
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-12">
-                                                    <div class="form-group form-group-default">
-                                                        <label>Phone Number</label>
-                                                        <input id="addName" type="text" name="phone_number" class="form-control" placeholder="Enter name" required />
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-12">
-                                                    <div class="form-group form-group-default">
-                                                        <label>Email</label>
-                                                        <input id="addEmail" type="text" name="email" class="form-control" placeholder="Enter name" required />
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-12">
-                                                    <div class="form-group form-group-default">
-                                                        <label>Address</label>
-                                                        <input id="addAdress" type="text" name="address" class="form-control" placeholder="Enter name" required />
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-12">
-                                                    <div class="form-group form-group-default">
-                                                        <label>Website</label>
-                                                        <input id="addWebsite" type="text" name="website" class="form-control" placeholder="Enter name" required />
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-12">
-                                                    <div class="form-group form-group-default">
-                                                        <label>Supplier Code</label>
-                                                        <input id="addCode" type="text" name="supplier_code" class="form-control" placeholder="Enter name" required />
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-12">
-                                                    <div class="form-group form-group-default">
-                                                        <label>Tax ID</label>
-                                                        <input id="addTax" type="text" name="tax_id" class="form-control" placeholder="Enter name" required />
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-12">
-                                                    <div class="form-group form-group-default">
-                                                        <label>Payment Term</label>
-                                                        <input id="addPayment" type="text" name="payment_terms" class="form-control" placeholder="Enter name" required />
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-12">
-                                                    <div class="form-group form-group-default">
-                                                        <label>Note</label>
-                                                        <input id="addNote" type="text" name="notes" class="form-control" placeholder="Enter name" required />
-                                                    </div>
-                                                </div>
-                                                
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div class="modal-footer border-0">
-                                        <button type="submit" id="addRowButton" class="btn btn-primary" form="addsupplierForm">Add</button>
-                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                         <!-- View Stock Modal -->
-                        <div class="modal fade" id="viewsupplierModal{{ supplier.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal fade" id="ViewCustomerModal{{ supplier.id }}" tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header border-0">
-                                        <h5 class="modal-title">View Stock</h5>
+                                        <h5 class="modal-title">View supplier</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        {% comment %} <p><strong>Name:</strong> {{ stock.name }}</p>
-                                        <p><strong>Quantity:</strong> {{ stock.quantity }}</p>
-                                        <p><strong>Price:</strong> {{ stock.price }}</p> {% endcomment %}
+                                        <p><strong>Name:</strong> {{ supplier.name }}</p>
+                                        <p><strong>Contact Name:</strong> {{ supplier.contact_name }}</p>
+                                        <p><strong>Phone Number:</strong> {{ supplier.phone_number }}</p>
+                                        <p><strong>Email:</strong> {{ supplier.email }}</p>
+                                        <p><strong>Address:</strong> {{ supplier.address }}</p>
+                                        <p><strong>Website:</strong> {{ supplier.website }}</p>
+                                        <p><strong>Supplier Code:</strong> {{ supplier.supplier_code }}</p>
+                                        <p><strong>Tax ID:</strong> {{ supplier.tax_id }}</p>
+                                        <p><strong>Payment Terms:</strong> {{ supplier.payment_terms }}</p>
+                                        <p><strong>notes:</strong> {{ supplier.notes }}</p>
                                     </div>
                                     <div class="modal-footer border-0">
                                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
@@ -194,83 +194,84 @@
                         </div>
 
                         <!-- Edit Stock Modal -->
-                        <div class="modal fade" id="editsupplierModal{{ supplier.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal fade" id="UpdateCustomerModal{{ supplier.id }}" tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header border-0">
-                                        <h5 class="modal-title">Edit Stock</h5>
+                                        <h5 class="modal-title">Update Supplier</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <!-- Form to Update Stock -->
-                                        <form method="POST" id="editsupplierForm{{ supplier.id }}" action="{% url 'supplier_update' supplier.id %}">
+                                        <form method="POST" id="UpdateSupplierForm{{ supplier.id }}" action="{% url 'supplier_update' supplier.id %}">
                                             {% csrf_token %}
                                             <div class="row">
                                                 <div class="col-sm-12">
                                                     <div class="form-group form-group-default">
                                                         <label>Name</label>
-                                                        <input id="editName{{ supplier.id }}" type="text" name="name" class="form-control" value="{{ stock.name }}" required />
+                                                        <input id="addName" type="text" name="name" class="form-control" placeholder="Enter name" value="{{supplier.name}}" required />
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group form-group-default">
                                                         <label>Contact Name</label>
-                                                        <input id="editContactName{{ supplier.id }}" type="text" name="contact_name" class="form-control" placeholder="Enter name" required />
+                                                        <input id="addName" type="text" name="contact_name" class="form-control" placeholder="Enter name" value="{{supplier.contact_name}}" required />
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group form-group-default">
                                                         <label>Phone Number</label>
-                                                        <input id="editPhone{{ supplier.id }}" type="text" name="phone_number" class="form-control" placeholder="Enter name" required />
+                                                        <input id="addName" type="text" name="phone_number" class="form-control" placeholder="Enter name" value="{{supplier.phone_number}}" required />
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group form-group-default">
                                                         <label>Email</label>
-                                                        <input id="editEmail{{ supplier.id }}" type="text" name="email" class="form-control" placeholder="Enter name" required />
+                                                        <input id="addEmail" type="text" name="email" class="form-control" placeholder="Enter name" value="{{supplier.email}}" required />
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group form-group-default">
                                                         <label>Address</label>
-                                                        <input id="editAddress{{ supplier.id }}" type="text" name="address" class="form-control" placeholder="Enter name" required />
+                                                        <input id="addAdress" type="text" name="address" class="form-control" placeholder="Enter name" value="{{supplier.address}}" required />
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group form-group-default">
                                                         <label>Website</label>
-                                                        <input id="editWebsite{{ supplier.id }}" type="text" name="website" class="form-control" placeholder="Enter name" required />
+                                                        <input id="addWebsite" type="text" name="website" class="form-control" placeholder="Enter name" value="{{supplier.website}}" required />
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group form-group-default">
                                                         <label>Supplier Code</label>
-                                                        <input id="editCode{{ supplier.id }}" type="text" name="supplier_code" class="form-control" placeholder="Enter name" required />
+                                                        <input id="addCode" type="text" name="supplier_code" class="form-control" placeholder="Enter name" value="{{supplier.supplier_code}}" required />
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group form-group-default">
                                                         <label>Tax ID</label>
-                                                        <input id="editTAX{{ supplier.id }}" type="text" name="tax_id" class="form-control" placeholder="Enter name" required />
+                                                        <input id="addTax" type="text" name="tax_id" class="form-control" placeholder="Enter name" value="{{supplier.tax_id}}" required />
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group form-group-default">
                                                         <label>Payment Term</label>
-                                                        <input id="editPayment{{ supplier.id }}" type="text" name="payment_terms" class="form-control" placeholder="Enter name" required />
+                                                        <input id="addPayment" type="text" name="payment_terms" class="form-control" placeholder="Enter name" value="{{supplier.payment_terms}}" required />
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group form-group-default">
                                                         <label>Note</label>
-                                                        <input id="editNote{{ supplier.id }}" type="text" name="notes" class="form-control" placeholder="Enter name" required />
+                                                        <input id="addNote" type="text" name="notes" class="form-control" placeholder="Enter name" value="{{supplier.notes}}" required />
                                                     </div>
                                                 </div>
+                                                
                                             </div>
                                         </form>
                                     </div>
                                     <div class="modal-footer border-0">
-                                        <button type="submit" class="btn btn-primary" form="editsupplierForm{{ supplier.id }}">Save changes</button>
+                                        <button type="submit" class="btn btn-primary" form="UpdateSupplierForm{{ supplier.id }}">Save changes</button>
                                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                                     </div>
                                 </div>
@@ -278,11 +279,11 @@
                         </div>
 
                         <!-- Delete Stock Modal -->
-                        <div class="modal fade" id="deletesupplierModal{{ supplier.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal fade" id="DeleteSupplierModal{{ supplier.id }}" tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header border-0">
-                                        <h5 class="modal-title">Delete Stock</h5>
+                                        <h5 class="modal-title">Delete Supplier</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
@@ -308,12 +309,12 @@
             <div class="mt-3">
                 <nav aria-label="Page navigation">
                     <ul class="pagination justify-content-center">
-                        {% if stocks.has_previous %}
+                        {% if suppliers.has_previous %}
                             <li class="page-item">
                                 <a class="page-link" href="?page=1" aria-label="First">First</a>
                             </li>
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ stocks.previous_page_number }}" aria-label="Previous">Previous</a>
+                                <a class="page-link" href="?page={{ suppliers.previous_page_number }}" aria-label="Previous">Previous</a>
                             </li>
                         {% else %}
                             <li class="page-item disabled">
@@ -324,8 +325,8 @@
                             </li>
                         {% endif %}
 
-                        {% for num in stocks.paginator.page_range %}
-                            {% if stocks.number == num %}
+                        {% for num in suppliers.paginator.page_range %}
+                            {% if suppliers.number == num %}
                                 <li class="page-item active">
                                     <span class="page-link">{{ num }}</span>
                                 </li>
@@ -336,12 +337,12 @@
                             {% endif %}
                         {% endfor %}
 
-                        {% if stocks.has_next %}
+                        {% if suppliers.has_next %}
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ stocks.next_page_number }}" aria-label="Next">Next</a>
+                                <a class="page-link" href="?page={{ suppliers.next_page_number }}" aria-label="Next">Next</a>
                             </li>
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ stocks.paginator.num_pages }}" aria-label="Last">Last</a>
+                                <a class="page-link" href="?page={{ suppliers.paginator.num_pages }}" aria-label="Last">Last</a>
                             </li>
                         {% else %}
                             <li class="page-item disabled">
@@ -379,9 +380,9 @@
 {% block scripts %}
 <script>
     // Add search functionality
-    document.getElementById('searchStock').addEventListener('keyup', function() {
+    document.getElementById('searchSupplier').addEventListener('keyup', function() {
         var input = this.value.toLowerCase();
-        var rows = document.querySelectorAll('#stockTable tbody tr');
+        var rows = document.querySelectorAll('#customerTable tbody tr');
         
         rows.forEach(function(row) {
             var cells = row.querySelectorAll('td');
@@ -393,32 +394,3 @@
     });
 </script>
 {% endblock %}
-
-<h2>Supplier List</h2>
-
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Contact</th>
-            <th>Phone</th>
-            <th>Email</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for supplier in suppliers %}
-        <tr>
-            <td>{{ supplier.name }}</td>
-            <td>{{ supplier.contact_name }}</td>
-            <td>{{ supplier.phone_number }}</td>
-            <td>{{ supplier.email }}</td>
-            <td>
-                <a href="{% url 'supplier_edit' supplier.id %}">Edit</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<a href="{% url 'supplier_create' %}">Add Supplier</a>
