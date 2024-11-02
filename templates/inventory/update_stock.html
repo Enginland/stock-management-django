@@ -1,0 +1,12 @@
+<h1>Update Stock for {{ item.name }}</h1>
+<form method="post">
+    {% csrf_token %}
+    <label for="transaction_type">Transaction Type:</label>
+    <select id="transaction_type" name="transaction_type">
+        <option value="IN">Stock In</option>
+        <option value="OUT">Stock Out</option>
+    </select>
+    <label for="quantity">Quantity:</label>
+    <input type="number" id="quantity" name="quantity" min="1" required>
+    <button type="submit">Update Stock</button>
+</form>
